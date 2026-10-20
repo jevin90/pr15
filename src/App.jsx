@@ -1,45 +1,64 @@
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 export default function App() {
-  const usernameRef = useRef(null);
-  const passwordRef = useRef(null);
-  const [submittedUser, setSubmittedUser] = useState("");
+  const [products, setProducts] = useState([]);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
 
-  function handleSubmit(event) {
+  function addProduct(event) {
     event.preventDefault();
 
-    const username = usernameRef.current.value;
+    const newProduct = {
+      id: Date.now(),
+      name: name,
+      price: Number(price)
+    };
 
-    setSubmittedUser(username);
+    setProducts([...products, newProduct]);
+    setName("");
+    setPrice("");
   }
 
   return (
     <div>
-      <h1>Login Form</h1>
+      <h1>Product Management</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={addProduct}>
         <input
           type="text"
-          placeholder="Enter Username"
-          ref={usernameRef}
+          placeholder="Enter Product Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
           required
         />
         <br /><br />
 
         <input
-          type="password"
-          placeholder="Enter Password"
-          ref={passwordRef}
+          type="number"
+          placeholder="Enter Product Price"
+          value={price}
+          onChange={(event) => setPrice(event.target.value)}
+          min="0"
           required
         />
         <br /><br />
 
-        <button type="submit">Login</button>
+        <button type="submit">Add Product</button>
       </form>
 
-      {submittedUser && (
-        <h3>Form submitted successfully for: {submittedUser}</h3>
+      <h2>Product List</h2>
+
+      {products.length === 0 ? (
+        <p>No products available.</p>
+      ) : (
+        products.map((product) => (
+          <div key={product.id}>
+            <p>
+              Product: {product.name} | Price: Rs. {product.price}
+            </p>
+          </div>
+        ))
       )}
     </div>
   );
